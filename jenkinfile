@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    //tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+       // maven "M3"
+    //}
+
+    stages {
+        stage('Build') {
+            steps {
+                // Get some code from a GitHub repository
+                git 'https://github.com/SaradaPrasad22/hello-world.git'
+
+               
+                sh 'pwd'
+                sh 'whoami'
+                //sh 'usermod -a -G docker jenkins'
+                //sh 'sudo chmod 777 /var/run/docker.sock'
+                //sh 'sudo setfacl --modify jenkins::rw /var/run/docker.sock'
+                sh 'docker ps'
+                
+                sh "docker run --rm -v /bitnami/jenkins/home/workspace/Buid-test-push-deply:/app -v /root/.m2/:/root/.m2/ -w /app maven:3-alpine mvn -B -DiskipTests clean package"
+                archiveArtifacts 'webapp/target/*.war'
+                //sh "docker build"
+                sh "docker build -t jenkins/pipelineapp ."
+                sh "cat mysecret.txt | docker login --username saradadocker --password-stdin"
+                sh "docker tag jenkins/pipelineapp saradadocker/pipelineapp:${env.BUILD_ID}"
+                sh "docker push saradadocker/pipelineapp:${env.BUILD_ID}"
+                
+                // To run Maven on a Windows agent, use
+                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+
+            //post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed, record the test results and archive the jar file.
+               // success {
+                    //junit '**/target/surefire-reports/TEST-*.xml'
+                    //archiveArtifacts 'webapp/target/*.war'
+                    //sh 'echo "completed successfully"'
+               //}
+           // }
+        }
+    }
+}
