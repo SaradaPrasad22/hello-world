@@ -1,0 +1,2 @@
+#Upload code to jfrodatrifactory
+curl -X PUT -u u:p -T Maven-Upload-1.1.jar "http://localhost:8081/artifactory/libs-release-local/Maven-Upload-1.1.jar"
