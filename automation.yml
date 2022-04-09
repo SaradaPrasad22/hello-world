@@ -1,0 +1,23 @@
+---
+- hosts: localhost
+
+  tasks:
+    - name: build the image
+      command: docker build -t jenkins/webapp -f /bitnami/jenkins/home/workspace/Maven_Ansible_selenium_Docker/Dockerfile
+      args:
+       chdir: /bitnami/jenkins/home/workspace/Maven_Ansible_selenium_Docker
+    - name: tag and push to docker hub
+      command: cat mysecret.txt | docker login --username saradadocker --password-stdin
+      command: docker tag jenkins/webapp saradadocker/mvnapp:${env.BUILD_ID}
+      command: docker push saradadocker/mvnapp:${env.BUILD_ID}
+    - name: stop existing container
+      command: docker stop test_server-webapp
+      ignore_errors: yes
+    - name: remove existing container
+      command: docker rm test_server-webapp
+      ignore_errors: yes
+    - name: remove existing image
+      command: docker rmi jenkins/webapp
+      ignore_errors: yes
+    - name: create container
+      command: docker run -d --name test_server-webapp -p 8085:8080 saradadocker/mvnapp:${env.BUILD_ID}
