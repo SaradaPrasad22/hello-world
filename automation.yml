@@ -3,7 +3,7 @@
 
   tasks:
     - name: build the image
-      command: docker build -t jenkins/webapp -f /bitnami/jenkins/home/workspace/Maven_Ansible_selenium_Docker/Dockerfile
+      command: docker build -t jenkins/webapp -f /bitnami/jenkins/home/workspace/Maven_Ansible_selenium_Docker/Dockerfile .
       args:
        chdir: /bitnami/jenkins/home/workspace/Maven_Ansible_selenium_Docker
     - name: tag and push to docker hub
