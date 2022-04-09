@@ -6,9 +6,10 @@
       command: docker build -t jenkins/webapp -f /bitnami/jenkins/home/workspace/Maven_Ansible_selenium_Docker/Dockerfile .
       args:
        chdir: /bitnami/jenkins/home/workspace/Maven_Ansible_selenium_Docker
-    - name: tag and push to docker hub
+    - name: login and tag the image
       command: cat mysecret.txt | docker login --username saradadocker --password-stdin
       command: docker tag jenkins/webapp saradadocker/mvnapp:${env.BUILD_ID}
+    - name: Push to docker hub
       command: docker push saradadocker/mvnapp:${env.BUILD_ID}
     - name: stop existing container
       command: docker stop test_server-webapp
